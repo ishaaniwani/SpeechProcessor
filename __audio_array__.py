@@ -1,6 +1,10 @@
 from pydub import AudioSegment
 
 class AudioArray(object):
+
+    CHUNK_MILLES = 50
+    DEFAULT_WEIGHT = 15
+
     '''
     Constructs an array of AudioSegment objects. If not array is passed in, then there will be a blank array 
     array - array of AudioSegment objects to define the wrapper array
@@ -21,7 +25,7 @@ class AudioArray(object):
     audio - the AudioSegment object to be processed for the aforementioned 
     '''
     def getNormalizedMeanAmplitude(self, audio):
-        sounds = list(audio[::250])
+        sounds = list(audio[::self.CHUNK_MILLES])
         normalizedMeans = []
         for i in range(len(sounds)):
             normalizedMeans.append(abs(sounds[i].dBFS))
@@ -32,10 +36,10 @@ class AudioArray(object):
     '''
     Returns the index of the AudioSegment object that has the greatest normalizedMeanAmplitude 
     '''
-    def getMaxNormalizedAmplitude(self): 
+    def getMaxNormalizedAmplitude(self, audios): 
         max = 0
-        for i in range(len(self.sounds)): 
-            if self.getNormalizedMeanAmplitude(self.sounds[i]) > self.getNormalizedMeanAmplitude(self.sounds[max]): 
+        for i in range(len(audios)): 
+            if self.getNormalizedMeanAmplitude(audios[i]) > self.getNormalizedMeanAmplitude(audios[max]): 
                 max = i 
         return max
 
@@ -44,12 +48,12 @@ class AudioArray(object):
     max - the index of the AudioSegment object with the greatest normalized mean amplitude. Does not negatively affect weighting 
     of this one. 
     '''
-    def overlaySounds(self, max): 
-        combinedSignals = self.sounds[max] 
+    def overlaySounds(self, max, audio): 
+        combinedSignals = audio[max] 
         i = 0
-        while i < len(self.sounds): 
+        while i < len(audio): 
             if i is not max: 
-                sound = self.sounds[i]
+                sound = audio[i]
                 sound = sound - self.weightedFunction(max , i)
                 combinedSignals = combinedSignals.overlay(sound)
             i = i + 1
@@ -59,4 +63,27 @@ class AudioArray(object):
     Calculates the dB response to remove from the specified sound signel. This is for future reference. 
     '''
     def weightedFunction(self, max, i): 
-        return 25
+        return self.DEFAULT_WEIGHT
+
+    '''
+    '''
+    def testOverlaySignals(self): 
+        slicedSounds = []
+        combinedSignals = AudioSegment.from_wav('wavfiles/silence.wav')
+        for sound in self.sounds: 
+            slicedSound = sound[::self.CHUNK_MILLES]
+            slicedSound = list(slicedSound)
+            slicedSounds.append(slicedSound)
+
+        rangeSlicedSounds = slicedSounds[0]
+
+        for M in range(len(rangeSlicedSounds)): 
+            slicedM = []
+            slicedM = list(slicedM)  
+            for slicedSound in slicedSounds:
+                slicedSound = list(slicedSound) 
+                slicedM.append(slicedSound[M])
+            max = self.getMaxNormalizedAmplitude(slicedM)
+            sound = self.overlaySounds(max, slicedM)
+            combinedSignals = combinedSignals + sound
+        return combinedSignals
