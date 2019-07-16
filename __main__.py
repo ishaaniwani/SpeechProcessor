@@ -1,6 +1,6 @@
 import speech_recognition as sr
 from pydub import AudioSegment
-from audioarray import AudioArray
+from __audio_Array__ import AudioArray
 
 sound1 = AudioSegment.from_wav('wavfiles/can-you-keep-a-secret.wav')
 sound2 = AudioSegment.from_wav('wavfiles/crowd_laugh_1.wav')
