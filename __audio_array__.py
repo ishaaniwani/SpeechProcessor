@@ -1,9 +1,12 @@
 from pydub import AudioSegment
+from scipy.signal import correlate
+import numpy as np 
 
 class AudioArray(object):
 
     CHUNK_MILLES = 50
     DEFAULT_WEIGHT = 15
+    AMP_THRES = 0.1
 
     '''
     Constructs an array of AudioSegment objects. If not array is passed in, then there will be a blank array 
@@ -87,3 +90,35 @@ class AudioArray(object):
             sound = self.overlaySounds(max, slicedM)
             combinedSignals = combinedSignals + sound
         return combinedSignals
+
+    '''
+    Calculates the phase time difference between two sound files by comparing 
+    where the same chunk of data are, and getting the difference between the times. 
+    sound1 - the first wav file 
+    sound2 - the second wav file, will analyze this one to see if it is in sound1 
+    Note: This is a work in progress. 
+    '''
+    def calculatePhaseDifference(self, sound1, sound2): 
+        slicedSound1 = sound1[::self.CHUNK_MILLES]
+        slicedSound2 = sound2[::self.CHUNK_MILLES]
+        
+        slicedSound1 = list(slicedSound1)
+        slicedSound2 = list(slicedSound2)
+        
+        time1 = 0 
+        time2 = 0 
+
+        for i in range(len(slicedSound1)): 
+            if slicedSound1[i].max_possible_amplitude > self.AMP_THRES: 
+                time1 = self.CHUNK_MILLES + i * self.CHUNK_MILLES
+                self.chunk1 = slicedSound1[i]
+                print(time1)
+                break
+
+        for i in range(len(slicedSound2)): 
+            if slicedSound2[i] == self.chunk1:
+                time2 = self.CHUNK_MILLES + i * self.CHUNK_MILLES 
+                print(time2)
+                break
+
+        return time2 - time1
