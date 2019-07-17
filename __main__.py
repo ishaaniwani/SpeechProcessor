@@ -1,38 +1,81 @@
 import speech_recognition as sr
 from pydub import AudioSegment
 from __audio_array__ import AudioArray
+from __mic_array__ import MicrophoneArray
+from __microphone__ import Microphone
+
+soundFile1 = 'wavfiles/awaiting.wav' 
+soundFile2 = 'wavfiles/awaiting.wav'
+soundFile3 = 'wavfiles/awaiting.wav'
+soundFile4 = 'wavfiles/awaiting.wav'
+
+soundFile5 = 'wavfiles/awaiting.wav'
+soundFile6 = 'wavfiles/awaiting.wav'
+soundFile7 = 'wavfiles/awaiting.wav'
+soundFile8 = 'wavfiles/awaiting.wav'
+
 
 '''
 Constructs AudioSegment objects 
 '''
-sound1 = AudioSegment.from_wav('wavfiles/can_you_keep_a_secret.wav')
-sound2 = AudioSegment.from_wav('wavfiles/crowd_laugh.wav')
-sound3 = AudioSegment.from_wav('wavfiles/footsteps.wav')
+sound1 = AudioSegment.from_wav(soundFile1)
+sound2 = AudioSegment.from_wav(soundFile2)
+sound3 = AudioSegment.from_wav(soundFile3)
+sound4 = AudioSegment.from_wav(soundFile4)
+
+sound5 = AudioSegment.from_wav(soundFile5)
+sound6 = AudioSegment.from_wav(soundFile6)
+sound7 = AudioSegment.from_wav(soundFile7)
+sound8 = AudioSegment.from_wav(soundFile8)
+
+mic1 = Microphone(1, 1, soundFile1)
+mic2 = Microphone(1, 1, soundFile2)
+mic3 = Microphone(1, 1, soundFile3)
+mic4 = Microphone(1, 1, soundFile4)
+
+mic5 = Microphone(1, 1, soundFile5)
+mic6 = Microphone(1, 1, soundFile6)
+mic7 = Microphone(1, 1, soundFile7)
+mic8 = Microphone(1, 1, soundFile8)
 
 '''
 Places AudioSegment objects into the wrapper class 
 '''
-sounds = AudioArray([sound1, sound2, sound3])
+sounds1 = AudioArray([sound1, sound2, sound3 , sound4])
+mic_arr1 = MicrophoneArray([mic1 , mic2 , mic3 , mic4])
 
-'''
-Overlays signals without any processing to show what that is like 
-'''
-problem = sound1.overlay(sound2)
-problem = problem.overlay(sound3)
-problem.export('wavfiles/problem.wav', format='wav')
+sounds2 = AudioArray([sound5, sound6, sound7, sound8 ])
+mic_arr2 = MicrophoneArray([mic5 , mic6 , mic7 , mic8])
 
 '''
 Processes and overlays the signals to show what the solution is like 
 '''
-solution = sounds.testOverlaySignals()
-solution.export('wavfiles/solution.wav', format='wav')
+solution1 = sounds1.testOverlaySignals()
+solution1.export('wavfiles/solution1.wav', format='wav')
+angle1 = mic_arr1.overallAngleEstimation()
+
+solution2 = sounds2.testOverlaySignals()
+solution2.export('wavfiles/solution2.wav', format='wav')
+angle2 = mic_arr2.overallAngleEstimation()
 
 ''' Recognizing wav file (solution)'''
 r = sr.Recognizer()
-with sr.AudioFile('wavfiles/solution.wav') as source:
+with sr.AudioFile('wavfiles/solution1.wav') as source:
     audio = r.record(source)
     try:
-        text = r.recognize_google(audio)
+        text1 = r.recognize_google(audio)
     except:
-        text = 'Unable to recognize source'
-print(text)
+        text1 = 'Unable to recognize source'
+print(text1)
+print(angle1)
+
+''' Recognizing wav file (solution)'''
+r = sr.Recognizer()
+with sr.AudioFile('wavfiles/solution2.wav') as source:
+    audio = r.record(source)
+    try:
+        text2 = r.recognize_google(audio)
+    except:
+        text2 = 'Unable to recognize source'
+print(text2)
+print(angle2)
