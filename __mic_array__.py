@@ -1,6 +1,6 @@
 import pydub
 import math
-import __microphone__
+from __microphone__ import Microphone
 
 
 class MicrophoneArray(object):
@@ -25,9 +25,21 @@ class MicrophoneArray(object):
         return math.sqrt((mic2.x - mic1.x)**2 + (mic2.y - mic2.x)**2)
 
     def overallAngleEstimation(self):
-        self.quickSort(self.microphoneArray, 0 , len(self.microphoneArray) - 1)
-        return (1.0 * self.getEstimatedAngle(0) + 0.8 * self.getEstimatedAngle(1) + 0.6 * self.getEstimatedAngle(2)) / 3
-    
+        DOAs = []
+        slicedSounds = [] 
+        for i in range(len(self.microphoneArray)): 
+            slicedSounds.append(self.microphoneArray[i].signal[::Microphone.CHUNK_MILLES])
+        for i in range(len(slicedSounds)): 
+            iDBFS = []
+            for slicedSound in slicedSounds: 
+                iDBFS.append(slicedSound[i])
+            max = 0 
+            for i in range(len(iDBFS)): 
+                if iDBFS[i].dBFS > iDBFS[max].dBFS: 
+                    max = i 
+            self.quickSort(self.microphoneArray, 0 , len(self.microphoneArray) - 1, max)
+            DOAs.append((1.0 * self.getEstimatedAngle(0) + 0.8 * self.getEstimatedAngle(1) + 0.6 * self.getEstimatedAngle(2)) / 3)
+        return DOAs
 
     def partition(self, arr, low, high, maxIdx):
         i = (low-1)         # index of smaller element
@@ -46,14 +58,14 @@ class MicrophoneArray(object):
         arr[i+1], arr[high] = arr[high], arr[i+1]
         return (i+1)
 
-    def quickSort(self,arr,low,high): 
+    def quickSort(self,arr,low,high,maxIdx): 
         if low < high: 
   
             # pi is partitioning index, arr[p] is now 
             # at right place 
-            pi = self.partition(arr,low,high, self.getMaxDBFS()) 
+            pi = self.partition(arr,low,high, maxIdx) 
   
             # Separately sort elements before 
             # partition and after partition 
-            self.quickSort(arr, low, pi-1) 
-            self.quickSort(arr, pi+1, high) 
+            self.quickSort(arr, low, pi-1 , maxIdx) 
+            self.quickSort(arr, pi+1, high , maxIdx) 

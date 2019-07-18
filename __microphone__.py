@@ -35,7 +35,11 @@ class Microphone(object):
     @property
     def y(self): 
         return self.my
-        
+    
+    @property 
+    def signal(self): 
+        return self.signal
+    
     def adjustWeighting(self, dB): 
         self.signal = self.signal - dB
     

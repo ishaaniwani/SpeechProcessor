@@ -4,7 +4,7 @@ from __audio_array__ import AudioArray
 from __mic_array__ import MicrophoneArray
 from __microphone__ import Microphone
 
-soundFile1 = 'wavfiles/awaiting.wav' 
+soundFile1 = 'wavfiles/awaiting.wav'
 soundFile2 = 'wavfiles/awaiting.wav'
 soundFile3 = 'wavfiles/awaiting.wav'
 soundFile4 = 'wavfiles/awaiting.wav'
@@ -13,7 +13,6 @@ soundFile5 = 'wavfiles/awaiting.wav'
 soundFile6 = 'wavfiles/awaiting.wav'
 soundFile7 = 'wavfiles/awaiting.wav'
 soundFile8 = 'wavfiles/awaiting.wav'
-
 
 '''
 Constructs AudioSegment objects 
@@ -41,11 +40,11 @@ mic8 = Microphone(-0.03178, 0.06237, soundFile8)
 '''
 Places AudioSegment objects into the wrapper class 
 '''
-sounds1 = AudioArray([sound1, sound2, sound3 , sound4])
-mic_arr1 = MicrophoneArray([mic1 , mic2 , mic3 , mic4])
+sounds1 = AudioArray([sound1, sound2, sound3, sound4])
+mic_arr1 = MicrophoneArray([mic1, mic2, mic3, mic4])
 
-sounds2 = AudioArray([sound5, sound6, sound7, sound8 ])
-mic_arr2 = MicrophoneArray([mic5 , mic6 , mic7 , mic8])
+sounds2 = AudioArray([sound5, sound6, sound7, sound8])
+mic_arr2 = MicrophoneArray([mic5, mic6, mic7, mic8])
 
 '''
 Processes and overlays the signals to show what the solution is like 
