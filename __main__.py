@@ -28,15 +28,15 @@ sound6 = AudioSegment.from_wav(soundFile6)
 sound7 = AudioSegment.from_wav(soundFile7)
 sound8 = AudioSegment.from_wav(soundFile8)
 
-mic1 = Microphone(1, 1, soundFile1)
-mic2 = Microphone(1, 1, soundFile2)
-mic3 = Microphone(1, 1, soundFile3)
-mic4 = Microphone(1, 1, soundFile4)
+mic1 = Microphone(0.06914, 0.01095, soundFile1)
+mic2 = Microphone(0.062375, 0.03177, soundFile2)
+mic3 = Microphone(0.0495, 0.0495, soundFile3)
+mic4 = Microphone(0.03178, 0.06237, soundFile4)
 
-mic5 = Microphone(1, 1, soundFile5)
-mic6 = Microphone(1, 1, soundFile6)
-mic7 = Microphone(1, 1, soundFile7)
-mic8 = Microphone(1, 1, soundFile8)
+mic5 = Microphone(-0.06914, 0.01095, soundFile5)
+mic6 = Microphone(-0.062375, 0.03177, soundFile6)
+mic7 = Microphone(-0.0495, 0.0495, soundFile7)
+mic8 = Microphone(-0.03178, 0.06237, soundFile8)
 
 '''
 Places AudioSegment objects into the wrapper class 
