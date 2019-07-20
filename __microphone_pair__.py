@@ -24,7 +24,7 @@ class MicrophonePair(object):
         waveFile = wave.open(fileName, 'r')
         length = waveFile.getnframes()
         for i in range(0, length):
-            waveData = waveFile.readframes(1)
+            waveData = waveFile.readframes(i - i + 1)
             data = struct.unpack("<h", waveData)
             amplitudeList.append(int(data[0]))
 
