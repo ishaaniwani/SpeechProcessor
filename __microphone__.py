@@ -8,6 +8,7 @@ class Microphone(object):
     '''
     '''
     def __init__(self, x, y, fileName): 
+        self.fileName = fileName 
         self.mx = x 
         self.my = y 
         self.signal = pydub.AudioSegment.from_wav(fileName)
@@ -39,9 +40,14 @@ class Microphone(object):
     @property 
     def signal(self): 
         return self.signal
+
+    @property
+    def fileName(self): 
+        return self.fileName
     
     def adjustWeighting(self, dB): 
         self.signal = self.signal - dB
+
     
     @property
     def angle(self): 
