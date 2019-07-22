@@ -52,20 +52,43 @@ class MicrophonePair(object):
         timeDelay = sampleRate * frameDiff
         return timeDelay
 
-def doaEstimation(self):
-    delay = self.calculateTimeDelay()
-    c = 340
-    distance = 3.4
-    Theta = math.sin((delay * c) / distance)
-    Theta = math.degrees(Theta)
-    return Theta
+    def doaEstimation(self):
+        delay = self.calculateTimeDelay()
+        c = 340
+        distance = 3.4
+        Theta = math.sin((delay * c) / distance)
+        Theta = math.degrees(Theta)
+        return Theta
 
+    def calculatePhaseDifference(self, maxPossibleDelay): 
+        xcorr = []
 
-@property
-def mic1(self):
-    return self.mic1
+        x = self.getAmplitudeList(self.mic1.fileName)
+        y = self.getAmplitudeList(self.mic2.fileName)
+        mx = sum(x) / len(x)
+        my = sum(y) / len(y)
 
+        for d in range(0, maxPossibleDelay):
+            numerator = 0
+            denominator = 0 
+            for i in range(0 , len(x)):
+                xNumerator = x[i] - mx
+                yIndex = i - d
+                if yIndex < 0:
+                    yIndex = len(y) - d
+                yNumerator = y[i] - my
 
-@property
-def mic2(self):
-    return self.mic2
+                numerator = numerator + xNumerator * yNumerator
+            xDenominator = 0 
+            yDenominator = 0 
+            for i in range(0, len(x)): 
+                xDenominator = xDenominator + (x[i] - mx)**2 
+            xDenominator = math.sqrt(xDenominator)
+
+    @property
+    def mic1(self):
+        return self.mic1
+
+    @property
+    def mic2(self):
+        return self.mic2
