@@ -1,0 +1,7 @@
+Two omnidirectional microphones. THey are spaced 0.15 meters apart. The speech signal is front and middle to the microphones. 
+The files were recorded using an Onyx Blackbird System. 
+
+DOA Estimation: ~90 degrees 
+Speech Signal: Hello, my name is Ishaan Sinha and I am a high school student. I enjoy eating apples
+File Length: 17 seconds
+Sample Rate: 48 kHz

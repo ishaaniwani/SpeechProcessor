@@ -5,6 +5,7 @@ from scipy.io import wavfile
 import numpy as np
 import wave 
 import struct
+import numpy as np
 
 
 class MicrophonePair(object):
@@ -17,22 +18,9 @@ class MicrophonePair(object):
         self.mic1 = mic1
         self.mic2 = mic2
 
-    def getAmplitudeList(self , fileName):
-
-        amplitudeList = []
-
-        waveFile = wave.open(fileName, 'r')
-        length = waveFile.getnframes()
-        for i in range(0, length):
-            waveData = waveFile.readframes(i - i + 1)
-            data = struct.unpack("<h", waveData)
-            amplitudeList.append(int(data[0]))
-
-        return amplitudeList
-
     def calculateTimeDelay(self):
-        amplitudes1 = self.getAmplitudeList(self.mic1.fileName)
-        amplitudes2 = self.getAmplitudeList(self.mic2.fileName)
+        amplitudes1 = self.mic1.getAmplitudeList()
+        amplitudes2 = self.mic2.getAmplitudeList()
 
         duration_seconds = AudioSegment.from_wav(self.mic1.fileName).duration_seconds
         numFrames = len(amplitudes1)
@@ -60,6 +48,14 @@ class MicrophonePair(object):
         Theta = math.degrees(Theta)
         return Theta
 
+    def calculatePhaseDifference(self):
+        a = np.asarray(self.mic1.getAmplitudeList())
+        b = np.asarray(self.mic2.getAmplitudeList())
+        xcorr = np.correlate(a , b)
+        delay = np.argmax(xcorr)
+        return delay
+
+    '''
     def calculatePhaseDifference(self, maxPossibleDelay): 
         xcorr = []
 
@@ -68,27 +64,35 @@ class MicrophonePair(object):
         mx = sum(x) / len(x)
         my = sum(y) / len(y)
 
-        for d in range(0, maxPossibleDelay):
-            numerator = 0
-            denominator = 0 
-            for i in range(0 , len(x)):
-                xNumerator = x[i] - mx
-                yIndex = i - d
-                if yIndex < 0:
-                    yIndex = len(y) - d
-                yNumerator = y[i] - my
+        if maxPossibleDelay > len(y) or maxPossibleDelay > len(x): 
+            if len(y) > len(x): 
+                maxPossibleDelay = len(x)
+            else: 
+                maxPossibleDelay = len(y)
 
-                numerator = numerator + xNumerator * yNumerator
+        for d in range(-maxPossibleDelay , maxPossibleDelay): 
+            numerator = 0 
+            denominator = 0 
+            for i in range(0 , len(x)): 
+                xNumerator = x[i] - mx
+                yIndex = i + d 
+                if yIndex < 0: 
+                    yIndex = abs(i + d) % maxPossibleDelay
+                yNumerator = y[yIndex] - my 
+
+                numerator = numerator + xNumerator * yNumerator 
             xDenominator = 0 
-            yDenominator = 0 
-            for i in range(0, len(x)): 
+            yDenominator = 0
+            for i in range(0 , len(x)): 
                 xDenominator = xDenominator + (x[i] - mx)**2 
             xDenominator = math.sqrt(xDenominator)
-
-    @property
-    def mic1(self):
-        return self.mic1
-
-    @property
-    def mic2(self):
-        return self.mic2
+            for i in range(0 , len(y)): 
+                yIndex = i + d
+                if yIndex < 0: 
+                    yIndex = (len(y) - 1) - (abs(d) % len(y))
+                yDenominator = yDenominator + (y[yIndex] - my)**2
+            denominator = denominator + xDenominator + yDenominator
+            corr = numerator / denominator 
+            xcorr.append(corr) 
+        return xcorr
+    '''

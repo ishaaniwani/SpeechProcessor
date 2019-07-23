@@ -1,5 +1,7 @@
 import pydub
 import math
+import wave 
+import struct 
 
 class Microphone(object):
 
@@ -11,8 +13,15 @@ class Microphone(object):
         self.fileName = fileName 
         self.mx = x 
         self.my = y 
-        self.signal = pydub.AudioSegment.from_wav(fileName)
-        
+        self.signal = pydub.AudioSegment.from_wav(fileName)   
+        self.amplitudeList = []
+        waveFile = wave.open(self.fileName, 'r')
+        length = waveFile.getnframes()
+        for i in range(0, length):
+            waveData = waveFile.readframes(i - i + 1)
+            data = struct.unpack("<h", waveData)
+            self.amplitudeList.append(int(data[0]))
+
     '''
     Breaks wav file into chunks and gets abs(dBFS) of each of them to get the mean
     '''
@@ -24,6 +33,9 @@ class Microphone(object):
         if(len(normalizedMeans) == 0):
             return 0
         return sum(normalizedMeans)/len(normalizedMeans)
+
+    def getAmplitudeList(self):
+        return self.amplitudeList
 
     @property
     def weight(self): 
@@ -37,17 +49,8 @@ class Microphone(object):
     def y(self): 
         return self.my
     
-    @property 
-    def signal(self): 
-        return self.signal
-
-    @property
-    def fileName(self): 
-        return self.fileName
-    
     def adjustWeighting(self, dB): 
         self.signal = self.signal - dB
-
     
     @property
     def angle(self): 

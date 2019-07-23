@@ -1,0 +1,7 @@
+Two omnidirectional microphones. THey are spaced 0.15 meters apart. The speech signal is front and middle to the microphones. 
+The files were recorded using an Onyx Blackbird System. 
+
+DOA Estimation: ~135 degrees 
+Speech Signal: Hey, how are you doing?
+File Length: 7 seconds
+Sample Rate: 48 kHz
